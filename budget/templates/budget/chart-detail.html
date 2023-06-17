@@ -1,0 +1,238 @@
+{% extends 'budget/base.html' %}
+{% block head %}
+{% load static %}
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet">
+
+<script src="{% static 'vendor/chart.js/Chart.js' %}"></script>
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">    
+ 
+    
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="section section-stats">
+        <div class="row">
+            <div class="col s12 m12 l4">
+                <div class="card-panel">
+                    <h6 class="bold">Total Budget</h6>
+                    {% if budget.budget_current > 0 %}
+                    <h2 class="bold green-text">{{ budget.budget_current }} zł</h2>
+                    {% elif budget.budget_current == 0 %}
+                    <h2 class="bold orange-text">{{ budget.budget_current }} zł</h2>
+                    {% else %}
+                    <h2 class="bold red-text">{{ budget.budget_current }} zł</h2>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col s12 m12 l4">
+                <div class="card-panel">
+                    <h6 class="bold">Total Expenses</h6>
+                    <h2 class="bold">{{ budget.expence_sum }} zł</h2>
+                </div>
+            </div>
+
+            <div class="col s12 m12 l4">
+                <div class="card-panel">
+                    <h6 class="bold">Total Incomes</h6>
+                    <h2 class="bold">{{ budget.income_sum }} zł</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-expenses">
+        <div class="row">
+            <a href="{% url 'e_detail' budget.slug %}">
+                <button class="btn waves-effect orange" >
+                    Expenses
+                </button>
+            </a>
+            <a href="{% url 'i_detail' budget.slug %}">
+                <button class="btn waves-effect orange">
+                    Incomes
+                </button>
+            </a>
+            <a href="{% url 'chart_detail' budget.slug %}">
+            <button class="btn waves-effect orange">
+                Charts
+           </button>
+            </a>
+        </div>
+        <div class="row">
+            
+        </div>
+    </section>
+        <div class="row">
+            <div class="card-panel">
+            <h1>Incomes by category</h1>
+            <section class="section section-stats">
+            
+            <div class="col-sm-6">    
+           <canvas id="myChart1" width="300" height="200"></canvas>
+                   <div>
+       
+       <script type="text/javascript">
+       var ctx = document.getElementById('myChart1').getContext('2d');
+       var myChart1 = new Chart(ctx, {
+           type: 'pie',
+           data: {
+               labels: [{% for category in category_list %} '{{ category }}', {% endfor %}],
+               datasets: [{
+                   label:'Category',
+                   data: [{% for amount in incomes_amount_list %} '{{ amount }}', {% endfor %}],
+                   backgroundColor:[
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 135, 1)',
+                   'rgba(255, 206, 86, 1)',
+                   'rgba(75, 192, 192, 1)',
+                   'rgba(151, 102, 132, 1)',
+                   'rgba(153, 99, 132, 1)',
+                   'rgba(255, 159, 64, 1)',
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 135, 1)',
+                   'rgba(25, 206, 86, 1)',
+                   'rgba(211, 192, 192, 1)',
+                   'rgba(234, 102, 132, 1)',
+                   'rgba(153, 99, 132, 1)',
+                   'rgba(255, 159, 64, 1)',
+                   'gree',
+                   'yellow',
+                   ],
+       
+                   borderColor: [
+                   'rgba(54, 162, 135, 1)',
+                   'rgba(25, 206, 86, 1)',
+                   'rgba(211, 192, 192, 1)',
+                   'rgba(234, 102, 132, 1)',
+                   'rgba(153, 99, 132, 1)',
+                   'rgba(255, 159, 64, 1)',
+       
+                   ],
+       
+                   borderWidth: 1
+               }]
+           },
+       
+           options: {
+               scales: {
+                   yAxes: [{
+                       ticks: {
+                           beginAtZero: true
+                       }
+                   }]
+               }
+           }
+       })
+       </script>        
+                   
+       <h1  style="padding-top: 55px">Expences by category</h1>
+       <div class="col-sm-6">    
+       <canvas id="myChart" width="300" height="200"></canvas>
+                   <div>
+       
+       <script type="text/javascript">
+       var ctx = document.getElementById('myChart').getContext('2d');
+       var myChart = new Chart(ctx, {
+           type: 'bar',
+           data: {
+               labels: [{% for category in category_list %} '{{ category }}', {% endfor %}],
+               datasets: [{
+                   label:'category',
+                   data: [{% for amount in expences_amount_list %} '{{ amount }}', {% endfor %}],
+                   backgroundColor:[
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 135, 1)',
+                   'rgba(255, 206, 86, 1)',
+                   'rgba(75, 192, 192, 1)',
+                   'rgba(151, 102, 132, 1)',
+                   'rgba(153, 99, 132, 1)',
+                   'rgba(255, 159, 64, 1)',
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 135, 1)',
+                   'rgba(25, 206, 86, 1)',
+                   'rgba(211, 192, 192, 1)',
+                   'rgba(234, 102, 132, 1)',
+                   'rgba(153, 99, 132, 1)',
+                   'rgba(255, 159, 64, 1)',
+                   'gree',
+                   'yellow',
+                   ],
+       
+                   borderColor: [
+                   'rgba(54, 162, 135, 1)',
+                   'rgba(25, 206, 86, 1)',
+                   'rgba(211, 192, 192, 1)',
+                   'rgba(234, 102, 132, 1)',
+                   'rgba(153, 99, 132, 1)',
+                   'rgba(255, 159, 64, 1)',
+       
+                   ],
+       
+                   borderWidth: 1
+               }]
+           },
+       
+           options: {
+               scales: {
+                   yAxes: [{
+                       ticks: {
+                           beginAtZero: true
+                       }
+                   }]
+               }
+           }
+       })
+       </script>
+       </div>        
+       </div>
+    </section>
+</div>
+
+
+
+<!-- end of static icon -->           
+    </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'vendor/chart.js/Chart.js' %}"></script>
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+
+
+
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+<!-- Page level plugin JavaScript-->
+<script src="{% static 'vendor/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.js' %}"></script>
+
+<!-- Demo scripts for this page-->
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin.min.js' %}"></script>
+
+<script>
+    $(".alert-success").fadeTo(2000, 500).slideUp(500, function(){
+        $(".alert-success").slideUp(500);
+    });
+    $(".alert-error").fadeTo(2000, 500).slideUp(500, function(){
+        $(".alert-error").slideUp(500);
+    });
+</script>
+{% endblock %}
