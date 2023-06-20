@@ -26,7 +26,7 @@ MEDIA_URL = '/img/'
 SECRET_KEY = 'django-insecure-%^l(pzgxk$8j)ed3*pz6nydqgp7wrx7ycp-brc(x(16k_j)f#w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
